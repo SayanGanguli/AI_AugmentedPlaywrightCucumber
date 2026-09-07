@@ -1,0 +1,8 @@
+pipeline {
+  agent any
+  stages {
+    stage('Install') { steps { bat 'npm ci' } }
+    stage('Typecheck') { steps { bat 'npm run typecheck' } }
+    stage('Test') { steps { bat 'npm run test:cucumber' } }
+  }
+}

@@ -1,0 +1,8 @@
+pipeline {
+  agent any
+  stages {
+    stage('Pull request checks') {
+      steps { bat 'npm ci && npm run typecheck && npm run test:cucumber' }
+    }
+  }
+}
