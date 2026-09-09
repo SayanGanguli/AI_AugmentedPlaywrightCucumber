@@ -53,9 +53,13 @@ coverage/
 test-results/
 playwright-report/
 reports/cucumber/*.json
+reports/cucumber/*.html
+reports/cucumber/*.png
+reports/cucumber/*.zip
+reports/cucumber/video/
 reports/playwright/
 reports/ai-analysis/*
-!reports/ai-analysis/.gitkeep
+plan-output/*.json
 
 # Environment files
 .env

@@ -11,5 +11,5 @@
     "outDir": "dist",
     "types": ["node", "@playwright/test"]
   },
-  "include": [".mcp/**/*.ts", "agents/**/*.ts", "config/**/*.ts", "scripts/**/*.ts", "src/**/*.ts", "playwright.config.ts"]
+  "include": [".mcp/**/*.ts", "config/**/*.ts", "scripts/**/*.ts", "src/**/*.ts", "playwright.config.ts"]
 }

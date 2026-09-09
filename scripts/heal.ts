@@ -1,4 +1,4 @@
-import { healFailure } from '../agents/self-healing/healer.agent.js';
+import { diagnoseFailure } from './agent-workflows.js';
 
 const [previous, ...candidates] = process.argv.slice(2);
-console.log(healFailure(previous ?? '', candidates) ?? 'No replacement locator found');
+console.log(JSON.stringify(diagnoseFailure([previous ?? '', ...candidates].join(' ')), null, 2));

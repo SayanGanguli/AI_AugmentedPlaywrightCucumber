@@ -1,3 +1,4 @@
-import { orchestrate } from '../agents/orchestrator/agent.orchestrator.js';
+import { createPlan, generateFeature } from './agent-workflows.js';
 
-console.log(orchestrate(process.argv.slice(2).join(' ') || 'Generated test coverage'));
+const requirement = process.argv.slice(2).join(' ') || 'Generated test coverage';
+console.log(generateFeature(createPlan(requirement)));

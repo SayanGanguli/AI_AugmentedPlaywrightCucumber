@@ -2,14 +2,13 @@
   "name": "ai_augmentedplaywrightcucumber",
   "version": "1.0.0",
   "description": "AI-augmented Playwright and Cucumber test automation framework",
-  "main": "dist/.mcp/server/index.js",
   "scripts": {
     "test": "npm run test:cucumber",
+    "test:headed": "HEADLESS=false npm run test:cucumber",
     "test:cucumber": "cucumber-js --config cucumber.js",
     "test:playwright": "playwright test",
-    "test:headed": "playwright test --headed",
     "typecheck": "tsc --noEmit",
-    "mcp": "tsx .mcp/server/index.ts",
+    "plan": "tsx scripts/plan.ts",
     "generate": "tsx scripts/generate.ts",
     "heal": "tsx scripts/heal.ts",
     "cleanup": "tsx scripts/cleanup.ts"
