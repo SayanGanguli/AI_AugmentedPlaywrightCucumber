@@ -18,7 +18,7 @@ export class LocatorFactory {
 
   getLocator(
     strategy: LocatorStrategy,
-    value: string,
+    value: string | RegExp,
     options?: Record<string, unknown>,
   ): Locator {
     switch (strategy) {
@@ -41,10 +41,10 @@ export class LocatorFactory {
         return this.page.getByAltText(value, options);
 
       case 'testId':
-        return this.page.getByTestId(value);
+        return this.page.getByTestId(value as string);
 
       case 'selector':
-        return this.page.locator(value, options);
+        return this.page.locator(value as string, options);
 
       default:
         throw new Error(`Unsupported locator strategy: ${strategy}`);

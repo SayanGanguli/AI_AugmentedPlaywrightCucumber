@@ -9,7 +9,6 @@
 - Persist every prompt / instruction automatically into `prompts/planner-prompts/`
 - Deconstruct user requests and target URLs into clear testing strategies.
 - Identify key user flows and edge cases.
-- Document selectors and expected outcomes for Playwright.
 - Persist every blueprint automatically into `src/test-plan/`.
 
 ## Execution Rules
@@ -25,7 +24,6 @@
 
    - Produce a markdown file containing:
      - High-level scenario descriptions (human-readable).
-     - Element map with selectors.
      - Notes or assumptions.
    - Save file in `src/test-plan/` with a unique name.
 
@@ -49,9 +47,6 @@
 ## Scenarios (high-level)
 1. Scenario description
 2. Scenario description
-
-## Element Map
-- Element → Selector
 
 ## Notes
 - Any assumptions or constraints
