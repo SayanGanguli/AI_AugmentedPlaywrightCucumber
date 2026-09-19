@@ -41,18 +41,44 @@ Implement approved test scenarios into the existing Playwright + Cucumber framew
      - Sequential prefix (`001`, `002`, …) + short description.
      - Example: `001_login_implementer.md`
 
-7. **Minimal changes**
+7. **Screenshot Requirement**
+
+   * After successfully implementing and executing each Page Object, capture a screenshot of the corresponding page.
+   - Save screenshots under:
+      ```text
+         screenshots/
+      ```
+
+   - Naming convention:
+
+      ```text
+         001LoginPage.png
+         002DashboardPage.png
+         003HomePage.png
+      ```
+
+   - Rules:
+
+         * Use sequential numbering.
+         * Include the Page Object name.
+         * Use `.png`.
+         * Capture the screenshot after the page has loaded successfully.
+         * Do not overwrite an existing screenshot unless explicitly requested.
+         * The screenshot must represent the actual implemented page state.
+         * Screenshots are implementation artifacts and must be committed with the automation changes.
+
+8. **Minimal changes**
 
    * Modify only what is required for the scenario.
    * Do not change framework architecture unnecessarily.
 
-8. **Validation**
+9. **Validation**
 
    * Run the implemented Cucumber scenario.
    * Verify both execution and expected assertions.
    * Never suppress or ignore test failures.
 
-9. **Code quality**
+10. **Code quality**
 
    * Follow existing TypeScript conventions.
    * Prefer reusable, strongly typed, maintainable code.
@@ -71,7 +97,28 @@ BasePage + LocatorFactory
        ↓
 Cucumber Step
        ↓
-Execute & Validate
+Execute Scenario
+       ↓
+Capture Screenshot
+       ↓
+Validate Result
 ```
+
+## Definition of Done
+
+Implementation is complete when:
+
+* [ ] Existing framework components were inspected.
+* [ ] Existing POMs/utilities were reused where applicable.
+* [ ] Page Object extends `BasePage`.
+* [ ] Locators use `LocatorFactory`.
+* [ ] Common actions use `BasePage`.
+* [ ] Cucumber steps remain thin.
+* [ ] Required prompts are saved under `prompts/`.
+* [ ] Required screenshot is saved under `screenshots/`.
+* [ ] Screenshot follows the sequential naming convention.
+* [ ] No secrets are introduced.
+* [ ] Relevant scenario executes successfully.
+* [ ] Expected assertions pass.
 
 **Principle:** Generate code that fits the existing framework—not code that bypasses it.
