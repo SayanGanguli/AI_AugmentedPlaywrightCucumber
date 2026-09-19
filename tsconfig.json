@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "lib": ["ES2022"],
     "types": ["node"],
     "strict": true,
@@ -14,12 +14,13 @@
     "allowJs": false,
     "experimentalDecorators": true,
     "sourceMap": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"],
       "@features/*": ["features/*"],
       "@fixtures/*": ["src/fixture/*"],
-      "@hooks/*": ["src/hooks/*"],
+      "@hooks/*": ["src/supports/*"],
       "@step-def/*": ["src/step-def/*"]
     }
   },
