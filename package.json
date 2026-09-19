@@ -1,0 +1,39 @@
+{
+  "name": "ai_augmentedplaywrightcucumber",
+  "version": "1.0.0",
+  "description": "An extensible TypeScript test automation framework combining Playwright, Cucumber, MCP tools, and AI agent workflows.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SayanGanguli/AI_AugmentedPlaywrightCucumber.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SayanGanguli/AI_AugmentedPlaywrightCucumber/issues"
+  },
+  "homepage": "https://github.com/SayanGanguli/AI_AugmentedPlaywrightCucumber#readme",
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.2.1",
+    "@types/node": "^26.6.1",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "cross-env": "^10.1.0",
+    "cucumber-html-reporter": "^5.0.2",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "multiple-cucumber-html-reporter": "^4.3.0",
+    "playwright": "^1.62.0",
+    "prettier": "^3.9.8",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.23.13",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.0"
+  }
+}

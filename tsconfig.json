@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2022"],
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "allowJs": false,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": ["src/*"],
+      "@features/*": ["features/*"],
+      "@fixtures/*": ["src/fixture/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@step-def/*": ["src/step-def/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "features/**/*.ts",
+    "cucumber.js",
+    "*.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "Reports",
+    "screenshots",
+    "test-results"
+  ]
+}
