@@ -1,7 +1,13 @@
 import type { Page } from '@playwright/test';
-import { BasePage } from './basePage';
+import { BasePage } from './BasePage';
 
-const loginUrl = `${process.env.BASE_URL ?? 'https://opensource-demo.orangehrmlive.com'}/web/index.php/auth/login`;
+const baseUrl = process.env.BASE_URL;
+
+if (!baseUrl) {
+  throw new Error('BASE_URL is not set. Add it to your .env file before running the tests.');
+}
+
+const loginUrl = `${baseUrl.replace(/\/$/, '')}/web/index.php/auth/login`;
 
 export class LoginPage extends BasePage {
 	private readonly loginHeading = this.factory.getLocator('role', 'heading', { name: 'Login' });
@@ -20,10 +26,14 @@ export class LoginPage extends BasePage {
 		await this.expectLocatorVisible(this.loginHeading);
 	}
 
-	async loginToApplication(username: string, password: string): Promise<void> {
+	async login(username: string, password: string): Promise<void> {
 		await this.fillLocator(this.usernameInput, username);
 		await this.fillLocator(this.passwordInput, password);
 		await this.clickLocator(this.loginButton);
+	}
+
+	async loginToApplication(username: string, password: string): Promise<void> {
+		await this.login(username, password);
 	}
 
 	async expectDashboard(): Promise<void> {
