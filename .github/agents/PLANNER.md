@@ -14,7 +14,7 @@
 
 ## Execution Rules
 1. **Input Handling**
-   - Accepts a target application URL and a high-level test request.
+   - Accepts a target application URL from .env file and a high-level test request.
    - Ignores implementation details (no code, no Gherkin).
 
 2. **Output Requirements**
