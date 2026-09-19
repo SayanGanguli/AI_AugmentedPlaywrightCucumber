@@ -1,6 +1,8 @@
-import { After, Before } from '@cucumber/cucumber';
+import { After, Before, setDefaultTimeout } from '@cucumber/cucumber';
 import { chromium } from '@playwright/test';
 import type { CustomWorld } from './custom-world';
+
+setDefaultTimeout(30000);
 
 Before(async function (this: CustomWorld) {
   this.browser = await chromium.launch({ headless: false });
@@ -9,6 +11,6 @@ Before(async function (this: CustomWorld) {
 });
 
 After(async function (this: CustomWorld) {
-  await this.context.close();
-  await this.browser.close();
+  await this.context?.close();
+  await this.browser?.close();
 });
