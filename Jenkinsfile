@@ -1,86 +1,85 @@
 pipeline {
     agent any
-
+    
     tools {
-        nodejs 'Node JS 20' 
+        // Matches the exact tool configuration for Node seen in your logs
+        nodejs 'Node_JS_20' 
     }
-
+    
     environment {
-        BASE_URL = 'https://orangehrmlive.com'
-        USERNAME = credentials('ORANGEHRM_USERNAME')
-        PASSWORD = credentials('ORANGEHRM_PASSWORD')
-        
-        // Exposing the API Key to the runner environment for the AI Agent
-        OPENAI_API_KEY = credentials('OPENAI_API_KEY')
-        
-        CI = 'true'
+        // Using your exact Jenkins system credential ID from the screenshot
+        GITHUB_CREDS = credentials('8d4960dc-0cee-4013-8fd5-2aabedb5f62e')
     }
-
+    
     stages {
-        stage('Checkout') {
+        stage('Clean & Checkout') {
             steps {
+                cleanWs()
                 checkout scm
             }
         }
-
+        
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node dependencies...'
-                sh 'npm ci'
-                sh 'npx playwright install --with-deps'
+                // Using 'bat' for Windows execution compatibility
+                bat 'npm install'
+                bat 'npx playwright install'
             }
         }
-
+        
         stage('Static Analysis') {
             steps {
-                sh 'npm run typecheck' 
+                echo 'Running linting and validation...'
+                bat 'npm run lint'
             }
         }
-
+        
         stage('Execute BDD Tests') {
             steps {
-                echo 'Executing Cucumber Automation Suite...'
-                // If this block throws an error, catchError registers it but allows the pipeline to continue to the post actions
-                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
-                    sh 'npm run test:cucumber'
-                }
+                echo 'Running Playwright Cucumber Tests...'
+                bat 'npm run test'
             }
         }
     }
-
+    
     post {
         always {
             echo 'Archiving Test Artifacts and Reports...'
             archiveArtifacts artifacts: 'reports/cucumber/**/*', allowEmptyArchive: true
             archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
 
+            // NOTE: Ensure the 'Cucumber reports' plugin is installed via Manage Jenkins.
+            // If it's not installed, comment out the two lines below to prevent NoSuchMethodError.
             cucumber fileIncludePattern: '**/*.json', 
                      jsonReportDirectory: 'reports/cucumber'
         }
         
-        // This structural block will execute ONLY if the 'Execute BDD Tests' stage fails
         failure {
             echo '❌ Automation test suite failed. Initializing AI Agent Self-Healing workflow...'
             
             script {
                 try {
-                    // 1. Create a dedicated branch for the patch so the AI doesn't modify your core branch directly
                     String patchBranch = "ai-heal-patch-${BUILD_NUMBER}"
-                    sh "git checkout -b ${patchBranch}"
+                    
+                    // 1. Create a dedicated branch for the patch
+                    bat "git checkout -b ${patchBranch}"
                     
                     // 2. Fire up your Planner-Generator-Healer script using the framework's custom hook
                     echo 'Running framework healing tools...'
-                    sh 'npm run heal'
+                    bat 'npm run heal'
                     
-                    // 3. Re-verify that the code compile safely after the AI patch
+                    // 3. Re-verify that the code compiles safely after the AI patch
                     echo 'Re-verifying TypeScript integrity post-heal...'
-                    sh 'npm run typecheck'
+                    bat 'npm run typecheck'
                     
-                    // 4. If compilation passes, push the corrected test logic to origin for review
+                    // 4. Push updates securely using the environment credentials wrapper
                     echo "AI Agent successfully resolved issues. Pushing updates to ${patchBranch}..."
-                    sh """
+                    
+                    bat """
                         git config user.name "Jenkins AI Agent"
                         git config user.email "jenkins-agent@yourdomain.com"
+                        git remote set-url origin https://%GITHUB_CREDS_USR%:%GITHUB_CREDS_PSW%@://github.com
                         git add .
                         git commit -m "chore(ai-heal): automated framework patch for build #${BUILD_NUMBER}"
                         git push origin ${patchBranch}
@@ -88,7 +87,7 @@ pipeline {
                     
                     echo "🎉 Patch pushed successfully. Please open a Pull Request from ${patchBranch} to review changes."
                 } catch (Exception e) {
-                    echo "⚠️ The Self-Healing sequence encountered an error or the generated patch failed typechecking: ${e.message}"
+                    echo "⚠️ The Self-Healing sequence encountered an error or the generated patch failed typechecking: ${e.getMessage()}"
                 }
             }
         }
