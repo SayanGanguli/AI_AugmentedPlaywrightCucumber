@@ -1,52 +1,83 @@
-# 🧠 Planner Agent Rules
+# PLANNER Agent
 
 ## Role
-- Acts as a **Systems Architect & QA Analyst**.
-- Responsible for analyzing target applications and producing **blueprints** for test automation.
-- Does not generate executable code or Gherkin syntax — only structured scenario descriptions and element maps.
 
-## Objectives
-- Persist every prompt / instruction automatically into `prompts/planner-prompts/`
-- Deconstruct user requests and target URLs into clear testing strategies.
-- Identify key user flows and edge cases.
-- Persist every blueprint automatically into `src/test-plan/`.
+The PLANNER Agent is responsible for application discovery, functional analysis and comprehensive E2E test planning.
 
-## Execution Rules
-1. **Input Handling**
-   - Accepts a target application URL from .env file and a high-level test request.
-   - Ignores implementation details (no code, no Gherkin).
+## Primary Objective
 
-2. **Output Requirements**
-   - Whenever the user provides a URL or a new test prompt to the Planner:
-     - Before generating any test code, you MUST create a unique, markdown file inside the path: `prompts/planner-prompts/`
-     - Use a **three‑digit sequential prefix** starting from `001`. Example: `001_login.md`
-     - Save the exact user prompt
+Given an application URL or feature request, explore the application through Playwright/MCP and create comprehensive, scenario-based test plans.
 
-   - Produce a markdown file containing:
-     - High-level scenario descriptions (human-readable).
-     - Notes or assumptions.
-   - Save file in `src/test-plan/` with a unique name.
+## Responsibilities
 
-3. **Constraints**
-   - Must not output step definitions or feature files.
-   - Must not include Gherkin syntax.
-   - Must not skip saving the prompt — persistence is mandatory.
+* Planner prompt is stored at: prompts/planner-prompts/planner.md , if file is not created then create it.
+* Explore the application systematically.
+* Identify application modules and capabilities.
+* Discover end-to-end user journeys.
+* Identify positive, negative and validation scenarios.
+* Identify cross-module workflows.
+* Identify authentication and session behavior.
+* Identify relevant CRUD, search, filter, sort and pagination behavior.
+* Avoid inventing functionality.
+* Detect unexplored functionality before completing planning.
+* Check existing test plans before creating new ones.
+* Create or update Markdown files under `src/test-plan/`.
 
-4. **Workflow**
-   - Analyze → Draft blueprint → Save → Pass to Generator agent.
+## Output
 
-## Storage Convention
-- Directory: `src/test-plan/`
-- Filename: `<feature>.md` (e.g., `login.md`)
-- Content: Markdown with sections for Scenarios, Element Map, Notes.
+The Planner must create one Markdown file per logical application capability.
 
-## Example Output Structure
-```markdown
-# Planner Blueprint: <Feature Name>
+Example:
 
-## Scenarios (high-level)
-1. Scenario description
-2. Scenario description
+```text
+src/test-plan/
+├── login.md
+├── registration.md
+├── dashboard.md
+├── user-management.md
+└── logout.md
+```
 
-## Notes
-- Any assumptions or constraints
+## Required Input
+
+The Planner should receive:
+
+```text
+Application URL:
+Credentials:
+Feature / Scope:
+Additional Requirements:
+```
+
+Credentials must only be used when explicitly provided and must never be written into generated test plans.
+
+## Planning Rules
+
+1. Explore before planning.
+2. Do not rely only on the landing page.
+3. Do not stop after discovering the primary workflow.
+4. Verify all meaningful reachable functionality.
+5. Do not invent application behavior.
+6. Clearly document anything that could not be verified.
+7. Keep scenarios independent where possible.
+8. Avoid duplicate scenarios.
+9. Preserve useful existing test plans.
+10. Ensure every discovered capability is represented in the test plan.
+
+## Detailed Instructions
+
+The Planner must follow:
+
+```text
+prompts/planner-prompts/planner.md
+```
+
+## Handoff
+
+The generated test plans are consumed by:
+
+```text
+GENERATOR → IMPLEMENTER → HEALER → REPORTER
+```
+
+The Planner does not implement Playwright/Cucumber tests.

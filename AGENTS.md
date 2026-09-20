@@ -1,37 +1,233 @@
-# 🤖 AI Agents Orchestration Guide
+# AI Augmented Playwright Cucumber
 
-This file defines the roles, workflows, and constraints for the AI Agent system powering this Cucumber.js + Playwright framework. The system operates on a continuous **Planner-Generator-Healer** loop.
+## Project Purpose
 
----
+This repository contains an AI-augmented end-to-end automation framework using:
 
-## 🗺️ 1. The Planner Agent
-**Role:** Systems Architect & BDD Quality Analyst
-**Objective:** Deconstruct user requests and target application URLs into clear testing strategies before any implementation code is written.
+* Playwright
+* TypeScript
+* Cucumber
+* MCP
+* GitHub Copilot
+* Jenkins
 
-### Execution Instructions
-* **Action:** Review the user's target website or layout.
-* **Output:** Generate a detailed strategy document containing the raw Gherkin scenarios (`Given`, `When`, `Then`) and precise element descriptions.
-* **Storage:** Save this blueprint as a unique markdown file inside the `logs/planner-prompts/` directory before passing it to the next agent. Do not write test code.
-
----
-
-## 🛠️ 2. The Generator Agent
-**Role:** Automation Software Engineer
-**Objective:** Consume the Planner’s strategic blueprint and turn it into clean, syntactically correct, and executable test files.
-
-### Framework Constraints
-* **Feature Files:** Must be written in pure Gherkin syntax and saved strictly inside the `/features` directory (e.g., `features/login.feature`).
-* **Step Definitions:** Must use `@cucumber/cucumber` step hooks (`Given`, `When`, `Then`) inside the `/step_definitions` directory (e.g., `step_definitions/login.steps.ts`).
-* **Context Isolation:** Never launch a manual browser instance (`chromium.launch`) inside a step. Always import `CustomWorld` from `support/custom-world.ts` and use the shared `this.page` instance provided by the custom hooks.
-* **Selector Strategy:** Prioritize resilient, accessible locator targets (`page.getByRole`, `page.getByText`) over fragile, volatile CSS or XPath strings.
+The framework uses specialized AI agents to support the complete automation lifecycle.
 
 ---
 
-## 🩺 3. The Healer Agent
-**Role:** Automated Debugger & Remediation Specialist
-**Objective:** Intercept errors from failing test executions, analyze logs, and patch broken step configurations automatically.
+# Agent Architecture
 
-### Healing Steps
-* **Action:** Read terminal error outputs, `TimeoutError` stacks, or framework crash summaries.
-* **Analysis:** Identify if the blocker is due to a delayed page element, a changed UI locator, or a hidden blocking overlay (like cookie consent banners).
-* **Fix:** Draft a precise adjustment plan and instruct the Generator to update the target files until the automation suite executes cleanly.
+```text
+                 ┌─────────────┐
+                 │   PLANNER   │
+                 └──────┬──────┘
+                        ↓
+                 ┌─────────────┐
+                 │  GENERATOR  │
+                 └──────┬──────┘
+                        ↓
+                 ┌─────────────┐
+                 │ IMPLEMENTER │
+                 └──────┬──────┘
+                        ↓
+                 ┌─────────────┐
+                 │   HEALER    │
+                 └──────┬──────┘
+                        ↓
+                 ┌─────────────┐
+                 │   REPORTER  │
+                 └─────────────┘
+```
+
+---
+
+# Repository Rules
+
+## Test Planning
+
+All generated test plans must be stored under:
+
+```text
+src/test-plan/
+```
+
+Plans must be organized by logical application capability.
+
+Example:
+
+```text
+src/test-plan/login.md
+src/test-plan/registration.md
+src/test-plan/dashboard.md
+```
+
+Do not create one monolithic test-plan file.
+
+---
+
+# Planner Rules
+
+The Planner must:
+
+* Explore the supplied application using available browser/MCP capabilities.
+* Inspect the complete reachable application flow.
+* Identify all meaningful application capabilities.
+* Identify positive, negative and validation scenarios.
+* Identify cross-module workflows.
+* Review existing test plans.
+* Avoid duplicate scenarios.
+* Avoid invented functionality.
+* Document exploration limitations.
+* Ensure every discovered capability has corresponding test coverage.
+
+Detailed Planner instructions are located at:
+
+```text
+prompts/planner-prompts/planner.md
+```
+
+Agent definition:
+
+```text
+agents/PLANNER.md
+```
+
+---
+
+# Generator Rules
+
+The GENERATOR converts approved test plans into Cucumber feature/scenario definitions.
+
+The Generator must:
+
+* Read the relevant test plan.
+* Preserve the intended scenario behavior.
+* Follow the project's Cucumber conventions.
+* Avoid inventing scenarios.
+* Avoid duplicating existing scenarios.
+* Use appropriate tags.
+* Keep feature files readable and business-oriented.
+
+---
+
+# Implementer Rules
+
+The IMPLEMENTER converts generated Cucumber scenarios into executable Playwright + TypeScript automation.
+
+The Implementer must:
+
+* Follow existing project architecture.
+* Reuse Page Objects.
+* Reuse fixtures/utilities.
+* Prefer accessible and stable locators.
+* Avoid unnecessary hard waits.
+* Follow TypeScript strictness.
+* Avoid duplicating framework functionality.
+* Keep implementation maintainable.
+
+---
+
+# Healer Rules
+
+The HEALER investigates failed automation.
+
+The Healer must:
+
+1. Identify the failure.
+2. Determine the root cause.
+3. Inspect the current application behavior.
+4. Verify whether the issue is caused by:
+
+   * Locator
+   * Timing
+   * Application behavior
+   * Test data
+   * Environment
+   * Framework implementation
+5. Make the smallest safe correction.
+6. Never hide real application failures by weakening assertions.
+
+---
+
+# Reporter Rules
+
+The REPORTER analyzes execution results.
+
+The Reporter should provide:
+
+* Execution summary
+* Passed scenarios
+* Failed scenarios
+* Skipped scenarios
+* Failure causes
+* Relevant screenshots/traces/reports
+* Regression observations
+
+Reports must distinguish test failures from infrastructure/environment failures.
+
+---
+
+# General Automation Rules
+
+* Use TypeScript.
+* Use Playwright for browser automation.
+* Use Cucumber as the test runner.
+* Follow existing project structure.
+* Prefer reusable Page Objects.
+* Prefer stable accessible locators.
+* Avoid `page.waitForTimeout()` unless explicitly justified.
+* Do not hard-code credentials.
+* Do not expose secrets in test plans, source code or reports.
+* Keep tests deterministic.
+* Keep independent scenarios independent.
+* Avoid unnecessary duplication.
+
+---
+
+# File Creation Rule
+
+Agents are expected to create/update files in the repository when the task requires file generation.
+
+Do not provide a file only in chat when the workflow requires a repository artifact.
+
+---
+
+# Agent Handoff
+
+```text
+PLANNER
+  ↓
+src/test-plan/*.md
+  ↓
+GENERATOR
+  ↓
+Cucumber feature files
+  ↓
+IMPLEMENTER
+  ↓
+Playwright + TypeScript implementation
+  ↓
+HEALER
+  ↓
+Stable automation
+  ↓
+REPORTER
+  ↓
+Execution/report analysis
+```
+
+---
+
+# Source of Truth
+
+Each stage must consume the artifacts produced by the previous stage.
+
+The Planner is the source of truth for intended test coverage.
+
+The Generator must not silently add or remove business scenarios.
+
+The Implementer must not silently change scenario behavior.
+
+The Healer must not silently weaken validation to make tests pass.
+
+The Reporter must accurately reflect execution results.

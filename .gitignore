@@ -7,6 +7,6 @@ reports/
 playwright-report/
 test-results/
 screenshots/
-
+.playwright-mcp/
 .vscode/
 .DS_Store
