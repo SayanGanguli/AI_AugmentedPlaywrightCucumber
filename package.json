@@ -4,7 +4,9 @@
   "description": "An extensible TypeScript test automation framework combining Playwright, Cucumber, MCP tools, and AI agent workflows.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx cucumber-js",
+    "heal": "npx tsx src/ai/heal.ts",
+    "typecheck": "npx tsc --noEmit"
   },
   "repository": {
     "type": "git",
