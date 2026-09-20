@@ -4,21 +4,19 @@
   "description": "An extensible TypeScript test automation framework combining Playwright, Cucumber, MCP tools, and AI agent workflows.",
   "main": "index.js",
   "scripts": {
-    "test": "npx cucumber-js",
-    "heal": "npx tsx src/ai/heal.ts",
-    "typecheck": "npx tsc --noEmit"
+    "test": "npx cucumber-js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SayanGanguli/AI_AugmentedPlaywrightCucumber.git"
+    "url": "git+https://github.com"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/SayanGanguli/AI_AugmentedPlaywrightCucumber/issues"
+    "url": "https://github.com"
   },
-  "homepage": "https://github.com/SayanGanguli/AI_AugmentedPlaywrightCucumber#readme",
+  "homepage": "https://github.com",
   "devDependencies": {
     "@cucumber/cucumber": "^13.2.1",
     "@playwright/test": "1.62.0",

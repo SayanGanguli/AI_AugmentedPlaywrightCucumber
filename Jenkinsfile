@@ -2,15 +2,16 @@ pipeline {
     agent any
     
     tools {
-        // Verified: This matches your exact Jenkins Global Tool Configuration name
+        // Aligns with your exact Jenkins Global Tool Configuration name
         nodejs 'Node JS 20' 
     }
     
     environment {
-        // Verified: Using the precise GUID from your credentials screenshot
-        GITHUB_CREDS    = credentials('8d4960dc-0cee-4013-8fd5-2aabedb5f62e')
+        // App runtime url to clear the BASE_URL missing error
+        BASE_URL        = 'https://orangehrmlive.com'
         
-        // Verified: Matches your specific OpenAI credential string ID
+        // Secure token parameters mapped from your Jenkins credentials panel
+        GITHUB_CREDS    = credentials('8d4960dc-0cee-4013-8fd5-2aabedb5f62e')
         OPENAI_API_KEY  = credentials('OPENAI_API_KEY')
     }
     
@@ -25,7 +26,6 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node dependencies...'
-                // Using Windows 'bat' to align with your C:\\ProgramData platform paths
                 bat 'npm install'
                 bat 'npx playwright install'
             }
@@ -45,45 +45,38 @@ pipeline {
             archiveArtifacts artifacts: 'reports/cucumber/**/*', allowEmptyArchive: true
             archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
 
-            // NOTE: If your Jenkins build still prints an error about "cucumber step not found",
-            // just delete or comment out the 2 lines below. It means you lack the Cucumber UI plugin.
             cucumber fileIncludePattern: '**/*.json', 
                      jsonReportDirectory: 'reports/cucumber'
         }
         
         failure {
-            echo '❌ Automation test suite failed. Initializing AI Agent Self-Healing workflow...'
+            echo '❌ Automation test suite failed. Preparing branch for GitHub Copilot Healer Agent...'
             
             script {
                 try {
                     String patchBranch = "ai-heal-patch-${BUILD_NUMBER}"
                     
-                    // 1. Create a dedicated branch for the patch using Windows native bat
+                    // 1. Automatically create a clean branch isolate for Copilot to patch
                     bat "git checkout -b ${patchBranch}"
                     
-                    // 2. Fire up your Planner-Generator-Healer script using the framework's custom hook
-                    echo 'Running framework healing tools...'
-                    bat 'npm run heal'
+                    // 2. We mock the heal indicator so the pipeline completes tracking cleanly
+                    echo "Constructing local patch checkpoint..."
+                    bat "echo Framework error state captured for build #${BUILD_NUMBER} > error-manifest.log"
                     
-                    // 3. Re-verify that the code compiles safely after the AI patch
-                    echo 'Re-verifying TypeScript integrity post-heal...'
-                    bat 'npm run typecheck'
-                    
-                    // 4. Push updates securely using the environment credentials wrapper
-                    echo "AI Agent successfully resolved issues. Pushing updates to ${patchBranch}..."
-                    
+                    // 3. Push the diagnostic checkpoint to GitHub securely
+                    echo "Pushing diagnostic branch ${patchBranch} to remote repository..."
                     bat """
                         git config user.name "Jenkins AI Agent"
                         git config user.email "jenkins-agent@yourdomain.com"
                         git remote set-url origin https://%GITHUB_CREDS_USR%:%GITHUB_CREDS_PSW%@://github.com
                         git add .
-                        git commit -m "chore(ai-heal): automated framework patch for build #${BUILD_NUMBER}"
+                        git commit -m "chore(ai-heal): test failure checkpoint for build #${BUILD_NUMBER}"
                         git push origin ${patchBranch}
                     """
                     
-                    echo "🎉 Patch pushed successfully. Please open a Pull Request from ${patchBranch} to review changes."
+                    echo "🎉 Ready! Checkout the branch '${patchBranch}' locally and activate your healer.md agent prompt in GitHub Copilot."
                 } catch (Exception e) {
-                    echo "⚠️ The Self-Healing sequence encountered an error or the generated patch failed typechecking: ${e.getMessage()}"
+                    echo "⚠️ Branch checkpoint sequence encountered a runtime error: ${e.getMessage()}"
                 }
             }
         }
