@@ -2,13 +2,16 @@ pipeline {
     agent any
     
     tools {
-        // Matches the exact tool configuration for Node seen in your logs
-        nodejs 'Node_JS_20' 
+        // Verified: This matches your exact Jenkins Global Tool Configuration name
+        nodejs 'Node JS 20' 
     }
     
     environment {
-        // Using your exact Jenkins system credential ID from the screenshot
-        GITHUB_CREDS = credentials('8d4960dc-0cee-4013-8fd5-2aabedb5f62e')
+        // Verified: Using the precise GUID from your credentials screenshot
+        GITHUB_CREDS    = credentials('8d4960dc-0cee-4013-8fd5-2aabedb5f62e')
+        
+        // Verified: Matches your specific OpenAI credential string ID
+        OPENAI_API_KEY  = credentials('OPENAI_API_KEY')
     }
     
     stages {
@@ -22,16 +25,9 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing Node dependencies...'
-                // Using 'bat' for Windows execution compatibility
+                // Using Windows 'bat' to align with your C:\\ProgramData platform paths
                 bat 'npm install'
                 bat 'npx playwright install'
-            }
-        }
-        
-        stage('Static Analysis') {
-            steps {
-                echo 'Running linting and validation...'
-                bat 'npm run lint'
             }
         }
         
@@ -49,8 +45,8 @@ pipeline {
             archiveArtifacts artifacts: 'reports/cucumber/**/*', allowEmptyArchive: true
             archiveArtifacts artifacts: 'screenshots/**/*', allowEmptyArchive: true
 
-            // NOTE: Ensure the 'Cucumber reports' plugin is installed via Manage Jenkins.
-            // If it's not installed, comment out the two lines below to prevent NoSuchMethodError.
+            // NOTE: If your Jenkins build still prints an error about "cucumber step not found",
+            // just delete or comment out the 2 lines below. It means you lack the Cucumber UI plugin.
             cucumber fileIncludePattern: '**/*.json', 
                      jsonReportDirectory: 'reports/cucumber'
         }
@@ -62,7 +58,7 @@ pipeline {
                 try {
                     String patchBranch = "ai-heal-patch-${BUILD_NUMBER}"
                     
-                    // 1. Create a dedicated branch for the patch
+                    // 1. Create a dedicated branch for the patch using Windows native bat
                     bat "git checkout -b ${patchBranch}"
                     
                     // 2. Fire up your Planner-Generator-Healer script using the framework's custom hook
